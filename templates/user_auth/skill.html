@@ -1,0 +1,93 @@
+{% extends "user_auth/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% if user.is_authenticated %}
+    <h1>{{ user.username }}</h1>
+<form class="form-horizontal" method="POST">
+{% csrf_token %}
+<h3>FormSet example</h3>
+    <div class="col-lg-6">
+    <div class="input-group">
+          {{ skillform|crispy }}
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+    <button class="add">добавить</button>
+    <br>
+<button type="submit" class="submit">Create</button>
+</form>
+{% endif %}
+<div id="results">
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type='text/javascript'>
+var list_of_skills_of_request_user = [];
+var lists_of_all_skills = [];
+var all_list_of_skills = {{ all_of_skills|safe }};
+var lists_of_skills_of_user = {{ list_of_skills|safe }};
+console.log(all_list_of_skills);
+var arrayLength = lists_of_skills_of_user.length;
+for (var i = 0; i < arrayLength; i++) {
+    console.log(lists_of_skills_of_user[i].fields.name);
+    list_of_skills_of_request_user.push(lists_of_skills_of_user[i].fields.name)
+}
+var arrayLength_of_all_skills = all_list_of_skills.length;
+for (var i = 0; i < arrayLength_of_all_skills; i++) {
+    console.log(all_list_of_skills[i].fields.name);
+    lists_of_all_skills.push(all_list_of_skills[i].fields.name)
+}
+console.log(lists_of_all_skills);
+$.each(list_of_skills_of_request_user, function( index,value ) {
+  $('#results').append("<div class='block'><span class = 'word'>"+value+"</span><span><button class = 'delete_item' name ='"+value+"'>delete</button></span></div>");
+});
+$('.form-horizontal').on('click','.add', function(event){
+    event.preventDefault();
+    console.log("form submitted!");  // sanity check
+    list_of_skills_of_request_user.push($('#id_name').val());
+    $('#results').append("<div class='block'><span class = 'word'>"+$('#id_name').val()+"</span><span><button class = 'delete_item' name ='"+$('#id_name').val()+"'>delete</button></span></div>");
+});
+$('.form-horizontal').on('submit',function (event) {
+        event.preventDefault();
+        create_post();
+});
+$('#results').on('click','.delete_item', function(event){
+    console.log($(this).attr('name'));
+    for (var i=list_of_skills_of_request_user.length-1; i>=0; i--) {
+    if (list_of_skills_of_request_user[i] === $(this).attr('name')) {
+        list_of_skills_of_request_user.splice(i, 1);
+        console.log(list_of_skills_of_request_user);
+        $(this).closest('div').remove()
+    }
+}
+});
+function create_post() {
+    console.log("create post is working!");
+    $.ajax({
+        url:"",
+        type : "POST",
+        data : { csrfmiddlewaretoken: "{{ csrf_token }}",
+            'the_post[]' : list_of_skills_of_request_user },
+
+        success : function(json) {
+            console.log(lists_of_all_skills);
+            console.log(json);
+            console.log("success");
+        },
+
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>");
+        }
+    });
+};
+$( function() {
+    $( "#id_name" ).autocomplete({
+      source: lists_of_all_skills
+    });
+  } );
+</script>
+{% endblock %}

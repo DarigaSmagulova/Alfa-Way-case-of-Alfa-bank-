@@ -1,0 +1,36 @@
+{% extends 'user_auth/base.html' %}
+
+
+{% load widget_tweaks %}
+
+{% block title %}Send Upgrade Request{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item active">Send Request</li>
+{% endblock %}
+
+{% block content %}
+ <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="date">Test Date</label>
+      <input type="date" class="datetime" id="date" name="test_date">
+      <select name="test_time">
+          <option value="09:00">09:00</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+          <option value="17:00">17:00</option>
+          <option value="18:00">18:00</option>
+        </select>
+
+    </div>
+    <button type="submit" class="btn btn-success">Post</button>
+
+  </form>
+{% endblock %}
+

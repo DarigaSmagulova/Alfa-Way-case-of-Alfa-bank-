@@ -1,0 +1,52 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  margin: auto;
+  text-align: center;
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+    </style>
+</head>
+<body>
+{% if user.is_authenticated %}
+<div class="card">
+  <img src="{{ username.profile.picture.url }}" alt="John" style="width:100%">
+  <h1>{{ username.first_name }} {{ username.last_name }}</h1>
+  <p class="title">{{ username.profile.speciality }}</p>
+  <p>Email:{{ username.email }}</p>
+  {% for i in skills %}
+      {{ i.name }}
+  {% endfor %}
+</div>
+    {% if user.username == username.username %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ u_profile|crispy }}
+    {{ p_profile|crispy }}
+    <button type="submit">submit</button>
+</form>
+    {% endif %}
+
+{% endif %}
+</body>
+</html>
