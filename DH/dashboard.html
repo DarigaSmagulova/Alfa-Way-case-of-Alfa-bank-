@@ -1,0 +1,37 @@
+{% extends 'DH/base.html' %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item active">Employees' level requests</li>
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <thead class="thead-inverse">
+      <tr>
+        <th>Employees</th>
+        <th>Speciality</th>
+        <th>Current Level</th>
+        <th>Expected Level</th>
+        <th>Test Date</th>
+        <th>Test Time</th>
+        <th>Obligatory Test</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for upgrade in upgrades %}
+        <tr>
+          <td>
+            <a href="{% url 'profile' upgrade.employee %}">{{ upgrade.employee }}</a>
+          </td>
+          <td class="align-middle">{{upgrade.speciality}}</td>
+          <td class="align-middle">{{upgrade.cur_level}}</td>
+          <td class="align-middle">{{upgrade.exp_level}}</td>
+          <td class="align-middle">{{upgrade.test_date}}</td>
+          <td class="align-middle">{{upgrade.test_time}}</td>
+          <td class="align-middle">{{upgrade.type_of_test}}</td>
+          <td></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
